@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>js选项卡</title>
+    <style>
+        #container1 div,#container2 div{
+                              width: 200px;
+                              height:200px;
+                              display: none;
+            border: 1px solid #888;
+        }
+        .active{
+            background: #ff0000;
+        }
+    </style>
+    <script>
+        /****
+         ***********普通方法实现选项卡**************
+         ****/
+//       window.onload=function () {
+//           var oParent=document.getElementById('container');
+//           var aInput=oParent.getElementsByTagName('input');
+//           var aDiv=oParent.getElementsByTagName('div');
+//           for(var i=0;i<aInput.length;i++){
+//               aInput[i].index=i;
+//               aInput[i].onclick=function () {
+//                   for(var i=0;i<aInput.length;i++){
+//                       aInput[i].className='';
+//                       aDiv[i].style.display='none';
+//                   }
+//                   this.className='active';
+//                   aDiv[this.index].style.display='block';
+//               }
+//           }
+//       }
+        /****
+         ***********面向对象方法之准备：变形**************
+         ****/
+            //先变形：1.不要有函数嵌套；2.允许使用全局变量;3.把onload中不是赋值的语句放到一个单独的函数中
+//        var oParent;
+//        var aInput;
+//        var aDiv;
+//        window.onload=function () {
+//            oParent=document.getElementById('container');
+//            aInput=oParent.getElementsByTagName('input');
+//            aDiv=oParent.getElementsByTagName('div');
+//            init();
+//        }
+//        function init() {
+//            for(var i=0;i<aInput.length;i++){
+//                aInput[i].index=i;
+//                aInput[i].onclick=change;
+//            }
+//        }
+//        function change() {
+//            for(var i=0;i<aInput.length;i++){
+//                aInput[i].className='';
+//                aDiv[i].style.display='none';
+//            }
+//            this.className='active';
+//            aDiv[this.index].style.display='block';
+//        }
+
+        /*************
+         * *****面向对象法*********
+         */
+        //1.变量改属性；2；函数改方法;
+        // 3.改this指向：注意事件和定时器中this的指向,原则是this都指向对象
+//        window.onload=function () {
+//            var t1=new Tab('container1');
+//            t1.init();
+//
+//            var t2=new Tab('container2');
+//            t2.init();
+//        }
+//        function Tab(id) {
+//            this.oParent=document.getElementById(id);
+//            this.aInput=this.oParent.getElementsByTagName('input');
+//            this.aDiv=this.oParent.getElementsByTagName('div');
+//        }
+//        Tab.prototype.init=function () {
+//            //this：对象；
+//            var This=this;
+//            for(var i=0;i<this.aInput.length;i++){
+//                this.aInput[i].index=i;
+//                this.aInput[i].onclick=function(){
+//                    This.change(this);   //修改this指向，由按钮指向对象
+//                };
+//            }
+//        }
+//        Tab.prototype.change=function (obj) {
+//            //this：对象
+//            for(var i=0;i<this.aInput.length;i++){
+//                this.aInput[i].className='';
+//                this.aDiv[i].style.display='none';
+//            }
+//            obj.className='active';
+//            this.aDiv[obj.index].style.display='block';
+//        }
+        /****************
+         * *******轮播效果
+         ************/
+        window.onload=function () {
+            var t1=new Tab('container1');
+            t1.init();
+
+            var t2=new Tab('container2');
+            t2.init();
+            t2.autoPlay();
+        }
+        function Tab(id) {
+            this.oParent=document.getElementById(id);
+            this.aInput=this.oParent.getElementsByTagName('input');
+            this.aDiv=this.oParent.getElementsByTagName('div');
+            this.iNow=0;
+
+        }
+        Tab.prototype.init=function () {
+            //this：对象；
+            var This=this;
+            for(var i=0;i<this.aInput.length;i++){
+                this.aInput[i].index=i;
+                this.aInput[i].onclick=function(){
+                    This.change(this);   //修改this指向，由按钮指向对象
+                };
+            }
+        }
+        Tab.prototype.change=function (obj) {
+            //this：对象
+            for(var i=0;i<this.aInput.length;i++){
+            this.aInput[i].className='';
+            this.aDiv[i].style.display='none';
+        }
+        obj.className='active';
+        this.aDiv[obj.index].style.display='block';
+        }
+        Tab.prototype.autoPlay=function () {
+            var This=this;
+            setInterval(function () {
+                if(This.iNow==This.aInput.length-1){ This.iNow++;
+                    This.iNow=0;
+                }else{
+                    This.iNow++;
+                }
+                for(var i=0;i<This.aInput.length;i++){
+                    This.aInput[i].className='';
+                    This.aDiv[i].style.display='none';
+                }
+                This.aInput[This.iNow].className='active';
+                This.aDiv[This.iNow].style.display='block';
+            },2000)
+        }
+    </script>
+</head>
+<body>
+<div id="container1">
+    <input class="active" type="button" value="1">
+    <input type="button" value="2">
+    <input type="button" value="3">
+    <div style="display: block">11</div>
+    <div>22</div>
+    <div>33</div>
+</div>
+<div id="container2">
+    <input class="active" type="button" value="1">
+    <input type="button" value="2">
+    <input type="button" value="3">
+    <div style="display: block">11</div>
+    <div>22</div>
+    <div>33</div>
+</div>
+</body>
+</html>
