@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>拖拽</title>
+    <style>
+        #div1{
+            width:200px;
+            height:200px;
+            background: #ff0000;
+            position:absolute;
+            left:10px;
+            top:20px;
+        }
+    </style>
+    <script>
+         //<--鼠标点击时，计算点击点距离元素左上角的距离；拖动鼠标时，计算元素左上角距离视口左上角距离，并定位元素-->
+        //变形：1.onload中的变量变为全局变量；2.不要有函数嵌套；3.把onload中除变量声明外的语句单独放在一个函数中；
+       /* var oDiv =null;
+        var disX = 0;
+        var disY = 0;
+        window.onload = function(){
+             oDiv = document.getElementById('div1');
+             init();
+        };
+        function init() {
+            oDiv.onmousedown=fnDown;
+        }
+        function fnDown(ev) {
+            var ev = ev || window.event;
+            disX = ev.clientX - oDiv.offsetLeft;//计算点击点距离元素左上角的距离
+            disY = ev.clientY - oDiv.offsetTop;
+
+            document.onmousemove=fnMove;
+            document.onmouseup=fnUp;
+        }
+        function fnMove(ev) {
+            var ev = ev || window.event;
+            oDiv.style.left = ev.clientX - disX + 'px';
+            oDiv.style.top = ev.clientY - disY + 'px';
+        }
+        function fnUp() {
+            document.onmousemove = null;
+            document.onmouseup = null;
+        }
+        */
+
+        //面向对象：1.变量即属性；2.函数即方法；3.改变this指向
+        window.onload=function () {
+            var d1=new Drag();
+            d1.init();
+        }
+        function Drag() {
+            this.oDiv=document.getElementById('div1');
+            this.disX=0;
+            this.disY=0;
+        }
+        Drag.prototype.init=function () {
+            var This=this;
+            this.oDiv.onmousedown=function (ev) {
+                var ev = ev || window.event;
+                This.fnDown(ev);
+                return false;
+            };
+        }
+         Drag.prototype.fnDown=function (ev){
+             var This=this;
+             this.disX = ev.clientX - this.oDiv.offsetLeft;//计算点击点距离元素左上角的距离
+             this.disY = ev.clientY - this.oDiv.offsetTop;
+
+             document.onmousemove=function(ev){
+                 var ev=ev||window.event;
+                 This.fnMove(ev);
+                 return false;
+             };
+             document.onmouseup=this.fnUp;
+         }
+         Drag.prototype.fnMove=function (ev){
+             this.oDiv.style.left = ev.clientX - this.disX + 'px';
+             this.oDiv.style.top = ev.clientY - this.disY + 'px';
+         }
+         Drag.prototype.fnUp=function(){
+             document.onmousemove = null;
+             document.onmouseup = null;
+         }
+    </script>
+</head>
+<body>
+<div id="div1" ></div>
+
+</body>
+</html>
