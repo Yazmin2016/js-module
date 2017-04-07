@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>固定列瀑布流</title>
+    <!--通过ajax动态加载内容,加载到高度最小的列-->
+    <script src="ajax.js"></script>
+    <style>
+        body{
+            margin:0;
+            padding: 0;
+        }
+        #uLi{
+            width:1080px;
+            margin:100px auto 0;
+        }
+        #uLi li{
+            list-style: none;
+            float:left;
+            width: 260px;
+            margin:0 10px 10px 0;
+        }
+        div img{
+            width:240px;
+            display: block;
+        }
+        div p{
+            font-size: 14px;
+            line-height: 20px;
+            color: #333;
+        }
+
+    </style>
+    <script>
+        window.onload = function() {
+
+            var oUl = document.getElementById('uLi');
+            var aLi = oUl.getElementsByTagName('li');
+            var iLen = aLi.length;
+            var iPage = 1;
+            var b = true;//控制一页一页加载
+
+            //初始化数据处理
+            getList();
+
+            function getList() {
+                ajax('get','getPics.php','cpage=' + iPage,function(data) {
+
+                    var data = JSON.parse(data);
+
+                    if ( !data.length ) {
+                        //后续没有数据了
+                        return ;
+                    }
+
+                    for ( var i=0; i<data.length; i++ ) {
+
+                        //获取高度最短的li
+                        var _index = getShort();
+
+                        var oDiv = document.createElement('div');
+                        var oImg = document.createElement('img');
+                        oImg.src = data[i].preview;
+                        oImg.style.width = '225px';//重新定义图片宽度
+                        oImg.style.height =  data[i].height * ( 225 / data[i].width ) + 'px';//重新定义高度，图片预加载
+                        oDiv.appendChild( oImg );
+                        var oP = document.createElement('p');
+                        oP.innerHTML = data[i].title;
+                        oDiv.appendChild( oP );
+
+                        aLi[_index].appendChild( oDiv );
+
+                    }
+
+                    b = true;
+
+                });
+            }
+            //是否该加载的条件：高度最小li的底部出现在可视区
+            window.onscroll = function() {
+
+                var _index = getShort();
+                var oLi = aLi[_index];
+
+                var scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+                if ( getTop( oLi ) + oLi.offsetHeight < document.documentElement.clientHeight + scrollTop ) {
+
+                    if ( b ) {
+                        b = false;
+                        iPage++;
+                        getList();
+                    }
+
+                }
+
+            }
+
+            function getShort() {  //计算列最小高度
+                var index = 0;
+                var ih = aLi[index].offsetHeight;
+                for (var i=1; i<iLen; i++) {
+                    if ( aLi[i].offsetHeight < ih ) {
+                        index = i;
+                        ih = aLi[i].offsetHeight;
+                    }
+                }
+                return index;
+            }
+
+            function getTop(obj) {  //获取一个元素到页面的绝对值
+                var iTop = 0;
+                while(obj) {
+                    iTop += obj.offsetTop;
+                    obj = obj.offsetParent;
+                }
+                return iTop;
+            }
+
+        }
+    </script>
+</head>
+<body>
+<ul id="uLi">
+    <li>
+        <!--<div>-->
+            <!--<img src="img/1.png" alt="">-->
+            <!--<p>女装春装2017新款潮套装女韩版连衣裙两件套时尚气质休闲夏季</p>-->
+        <!--</div>-->
+    </li>
+    <li>
+        <!--<div>-->
+            <!--<img src="img/2.png" alt="">-->
+            <!--<p>欧洲站复古名媛气质裙子2017新款绿色无袖旗袍连衣裙夏季女装</p>-->
+        <!--</div>-->
+    </li>
+    <li>
+        <!--<div>-->
+            <!--<img src="img/3.png" alt="">-->
+            <!--<p>2017夏装新款韩版大码女装宽松T恤圆领女短袖潮3D猫咪BF</p>-->
+        <!--</div>-->
+    </li>
+    <li>
+        <!--<div>-->
+            <!--<img src="img/4.png" alt="">-->
+            <!--<p>韩版荷叶边连衣裙女装长袖宽松白色显瘦a字裙短裙</p>-->
+        <!--</div>-->
+    </li>
+</ul>
+</body>
+</html>
