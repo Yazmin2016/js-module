@@ -97,12 +97,16 @@
             * 箭头切换
             * */
             function animate(offset) {
-                var list_left=parseInt(list.style.left);
+                if (offset == 0) {
+                    return;
+                }
+
+                animated=true;
+                var list_left=parseInt(list.style.left)+offset;
                 var time=300;//位移总时间
                 var interval=10;//位移间隔时间
                 var speed=offset/(time/interval);//每次位移量
 
-                animated=true;
                 function go() {   //轮播动画
                     if((speed<0&&parseInt(list.style.left)>list_left)||(speed>0&&parseInt(list.style.left)<list_left)){
                         list.style.left=parseInt(list.style.left)+speed+'px';
@@ -110,7 +114,7 @@
                     }
                     else {
                         animated=false;
-                        list.style.left=list_left + offset + 'px';
+                        list.style.left=list_left + 'px';
                         if(list_left > -600){
                             list.style.left = -3000 + 'px';
                         }
