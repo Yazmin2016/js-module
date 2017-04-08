@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>ajax无刷新上传</title>
+    <style>
+        #div1{
+            width:300px;
+            height:30px;
+            border:1px solid #333;
+            border-radius: 5px;
+            margin-top: 10px;
+            position: relative;
+        }
+        #div2{
+            width:0;
+            height:30px;
+            background:#a9a9a9;
+            border-radius: 5px;
+        }
+        #div3{
+            width: 300px;
+            height:30px;
+            text-align: center;
+            line-height: 30px;
+            /*position: absolute;*/
+            /*left:0;*/
+            /*top:0;*/
+        }
+    </style>
+    <script>
+        window.onload=function () {
+            var obtn=document.getElementById('btn');
+            var omyfile=document.getElementById('myfile');
+            var oDiv1=document.getElementById('div1');
+            var oDiv2=document.getElementById('div2');
+            var oDiv3=document.getElementById('div3');
+
+            obtn.onclick=function () {
+//                alert(omyfile.value);  //获取到的是file控件的value值，即文件路径，并不是我们选择的文件
+//                alert(omyfile.files);  //file控件中选择的文件列表对象
+
+//                for(var attr in omyfile.files[0]){ //ajax把omyfile.files[0]发送给后端
+//                    console.log(attr + ':'+omyfile.files[0][attr]);
+//                }
+
+                var xhr=new XMLHttpRequest();
+
+                xhr.onload=function () {
+//                    alert(1);
+//                    var data=JSON.parse(this.responseText);
+//                    alert(data.msg+':'+data.url)
+                    alert('上传成功了')
+                }
+                //新版ajax进度事件，xhr.upload.onprogress,,ev.total:待加载总时间；ev.loaded:已上传总时间
+                var oUpload=xhr.upload;
+                oUpload.onprogress=function(ev) {
+                    console.log(ev.total+':'+ev.loaded);
+                    var iscale=ev.total/ev.loaded;
+                    oDiv2.style.width=iscale*300+'px';
+                    oDiv3.innerHTML=iscale*100+'%';
+                }
+
+                xhr.open('post','post_file.php','true');
+                xhr.setRequestHeader('X-Request-Width','XMLHttpRequest')
+                var oFormData=new FormData();       //通过FormData来构建文件的二进制提交数据
+                oFormData.append('file',omyfile.files[0]);
+                xhr.send(oFormData);
+            }
+        }
+    </script>
+</head>
+<body>
+<input type="file" id="myfile">
+<input type="button" id="btn" value="提交">
+<div id="div1">
+    <div id="div2">
+        <div id="div3">0</div>
+    </div>
+</div>
+</body>
+</html>
