@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>轮播图(一)</title>
+    <style>
+        ul{
+            padding: 0;
+            margin:0;
+        }
+        #box{
+            width:706px;
+        }
+        .scroll_wrap {
+            height:196px;
+            background:url(images/scroll_bg.gif) repeat-x 0 -478px;
+        }
+        .scroll_wrap_l {
+            height:196px;
+            background:url(images/scroll_bg.gif) no-repeat 0 -86px;
+        }
+        .scroll_wrap_r {
+            height:196px;
+            background:url(images/scroll_bg.gif) no-repeat right -282px;
+            position:relative;
+        }
+
+        .prev,.next {
+            width:35px;
+            height:43px;
+            position:absolute;
+            top:70px;
+        }
+        .prev {
+            left:0;
+            background:url(images/scroll_bg.gif) no-repeat;
+        }
+        .next {
+            right:0;
+            background:url(images/scroll_bg.gif) no-repeat 0 -43px;
+        }
+
+        .list_wrap {
+            width:615px;
+            padding-top:32px;
+            margin:0 auto;
+            overflow:hidden;
+            position:relative;
+        }
+        .list_wrap ul {
+            height:150px;
+            position:relative;
+            left:0;
+        }
+        .list_wrap li {
+            width:205px;
+            float:left;
+            list-style: none;
+        }
+        .list_wrap a, .list_wrap p {
+            width:145px;
+            margin:0 auto;
+        }
+        .list_wrap a {
+            display:block;
+            height:100px;
+        }
+        .list_wrap p {
+            line-height:14px;
+            padding-top:10px;
+            font-size:12px;
+            color:#600;
+            text-align:center;
+        }
+    </style>
+    <script>
+        window.onload=function () {
+            namespace.app.toRun();
+        }
+        namespace={ };
+        namespace.tools={ };
+        namespace.tools.getByClass=function (oParent,sClass) {
+            var aEle=oParent.getElementsByTagName('*');
+            var arr=[];
+            for(var i=0;i<aEle.length;i++){
+                if (aEle[i].className==sClass){
+                    arr.push(aEle[i]);
+                }
+            }
+            return arr;
+        }
+        namespace.ui={ };
+        //向左移动:非匀速移动
+        namespace.ui.moveLeft = function(obj,old,now){
+
+            clearInterval(obj.timer);
+            obj.timer = setInterval(function(){
+
+                var iSpeed = (now - old)/10;
+
+                iSpeed = iSpeed > 0 ? Math.ceil(iSpeed) : Math.floor(iSpeed);
+
+                if(now == old){
+                    clearInterval(obj.timer);
+                }
+                else{
+                    old += iSpeed;
+                    obj.style.left = old + 'px';
+                }
+
+            },30);
+
+        };
+        namespace.app={ };
+        namespace.app.toRun=function () {
+            var oRun = document.getElementById('run1');
+            var oUl = oRun.getElementsByTagName('ul')[0];
+            var aLi = oUl.getElementsByTagName('li');
+
+            var oPrev = namespace.tools.getByClass(oRun,'prev')[0];
+            var oNext = namespace.tools.getByClass(oRun,'next')[0];
+
+            var iNow=0;
+
+            oUl.innerHTML += oUl.innerHTML;  //复制一份ul
+
+            oUl.style.width = aLi.length * aLi[0].offsetWidth + 'px';
+
+            oPrev.onclick = function(){
+
+                if(iNow == 0){
+                    iNow = aLi.length/2;
+                    oUl.style.left = -oUl.offsetWidth/2 + 'px';
+                }
+
+                namespace.ui.moveLeft(oUl,-iNow*aLi[0].offsetWidth,-(iNow-1)*aLi[0].offsetWidth);
+
+                iNow--;
+
+            };
+
+            oNext.onclick = function(){
+
+                if(iNow == aLi.length/2){
+                    iNow = 0;
+                    oUl.style.left = 0;
+                }
+
+                namespace.ui.moveLeft(oUl,-iNow*aLi[0].offsetWidth,-(iNow+1)*aLi[0].offsetWidth);
+
+                iNow++;
+
+            };
+        }
+    </script>
+</head>
+<body>
+<div id="box">
+    <div id="scroll_list">
+        <h2>无缝切换</h2>
+        <div class="scroll_wrap">
+            <div class="scroll_wrap_l">
+                <div id="run1" class="scroll_wrap_r">
+                    <a class="prev" href="javascript:;"></a>
+                    <a class="next" href="javascript:;"></a>
+                    <div class="list_wrap">
+                        <ul>
+                            <li>
+                                <a href="#"><img src="images/scroll_pic/1.jpg" alt="" /></a>
+                                <p>Elegant MP3 player skin PSD download</p>
+                            </li>
+                            <li>
+                                <a href="#"><img src="images/scroll_pic/2.jpg" alt="" /></a>
+                                <p>Download shopping bag & icons (PSD & PNG)</p>
+                            </li>
+                            <li>
+                                <a href="#"><img src="images/scroll_pic/3.jpg" alt="" /></a>
+                                <p>High resolution abstract bokeh background</p>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+</body>
+</html>
