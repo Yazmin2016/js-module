@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>本地存储-保存注册信息</title>
+    <script>
+        window.onload=function () {
+            var aInput=document.getElementsByTagName('input');
+            var aT=document.getElementById('desc');
+
+            if( window.localStorage.getItem('name') ){
+                aInput[0].value=window.localStorage.getItem('name');
+            }
+            if( window.localStorage.getItem('sex') ){
+               for(var i=0;i<aInput.length;i++){
+                   if(aInput[i].value==window.localStorage.getItem('sex')){
+                       aInput[i].checked=true;
+                   }
+               }
+            }
+            if(window.localStorage.getItem('desc')){
+                aT.value=window.localStorage.getItem('desc');
+            }
+
+            window.onunload=function () { //关闭页面时触发事件：本地存储
+                if(aInput[0].value){
+                    window.localStorage.setItem('name',aInput[0].value);
+                }
+                for(var i=1;i<aInput.length;i++){
+                    if(aInput[i].checked==true){
+                        window.localStorage.setItem('sex',aInput[i].value);
+                    }
+                }
+                if(aT.value){
+                    window.localStorage.setItem('desc',aT.value);
+                }
+            };
+        }
+    </script>
+</head>
+<body>
+<p>
+    用户名：<input type="text">
+</p>
+<p>
+    <input type="radio" value="男" name="sex">男
+    <input type="radio" value="女" name="sex">女
+</p>
+<p>
+    <textarea id="desc"></textarea>
+</p>
+</body>
+</html>
