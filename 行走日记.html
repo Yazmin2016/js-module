@@ -97,7 +97,7 @@
                 window.localStorage.clear();
             };
 
-            aInput[3].onclick = function(){
+            aInput[3].onclick = function(){ //标记地图
 
                 var This = this;
 
@@ -121,7 +121,7 @@
 
             };
 
-            function createLi(){
+            function createLi(){ //
 
                 var oLi = document.createElement('li');
                 oLi.innerHTML = window.localStorage.getItem('title'+iNow);
@@ -156,13 +156,13 @@
                 }
 
             }
-            aBox1_input[0].onclick = function(){
+            aBox1_input[0].onclick = function(){//后退
 
                 move(oUl,-aBox[0].offsetWidth,0);
 
             };
 
-            aBox1_input[1].onclick = function(){
+            aBox1_input[1].onclick = function(){ //前进
 
                 move(oUl,-aBox[0].offsetWidth,-2*aBox[0].offsetWidth);
 
@@ -191,9 +191,9 @@
 
             };
 
-            oBox2_input.onclick = function(){
+            oBox2_input.onclick = function(){//后退
 
-                startMove(oUl,{left : -aBox[0].offsetWidth });
+                move(oUl,-2*aBox[0].offsetWidth,-aBox[0].offsetWidth);
 
             };
 
