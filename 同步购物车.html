@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>本地存储：同步购物车</title>
+    <script>
+        window.onload=function () {
+            var aInput=document.getElementsByTagName('input');
+
+            for(var i=0;i<aInput.length;i++){//本地存储
+                aInput[i].onclick=function ()    {
+                    if(this.checked){
+                        window.localStorage.setItem('sel',this.value);
+                    }
+                    else {
+                        window.localStorage.setItem('onsel',this.value);
+                    }
+                }
+            }
+
+            window.addEventListener('storage',function (ev) {//storage事件：当数据有修改或删除时在共享页面上触发
+                if(ev.key=='sel'){  //共享页面上标记已选项
+                    for(var i=0;i<aInput.length;i++){
+                        if(ev.newValue==aInput[i].value){
+                            aInput[i].checked=true;
+                        }
+                    }
+                }
+                else if(ev.key=='onsel'){
+                    for(var i=0;i<aInput.length;i++){
+                        if(ev.newValue==aInput[i].value){
+                            aInput[i].checked=false;
+                        }
+                    }
+                }
+            },false)
+
+        }
+    </script>
+</head>
+<body>
+<input type="checkbox" value="香蕉">香蕉<br>
+<input type="checkbox" value="苹果">苹果<br>
+<input type="checkbox" value="橙子">橙子<br>
+<input type="checkbox" value="香梨">香梨<br>
+</body>
+</html>
