@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        .wrap{
+            width:200px;
+            height: 30px;
+            border:1px solid #000;
+            overflow: hidden;
+        }
+        .box{
+            width: 400px;
+            height:30px;
+            background: repeating-linear-gradient(75deg,  green 0,green 10px,#ffffff 10px,#ffffff 20px);
+            transition: 3s;
+        }
+        .wrap:hover .box{
+            margin-left: -100px;
+        }
+    </style>
+</head>
+<body>
+    <div class="wrap">
+        <div class="box"></div>
+    </div>
+</body>
+</html>
